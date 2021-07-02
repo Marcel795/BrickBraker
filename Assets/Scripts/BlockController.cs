@@ -7,9 +7,10 @@ public class BlockController : MonoBehaviour
 {
     [SerializeField] AudioClip breakSound;
     [SerializeField] GameObject blockDestroyEffect;
-    [SerializeField] int maxHits;
+    [SerializeField] int maxHits = 0;
     [SerializeField] Sprite[] sprite;
     [SerializeField] int hits = 0;
+    [SerializeField] Sprite[] hitSprites;
     LevelController level;
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -20,7 +21,7 @@ public class BlockController : MonoBehaviour
             //wenn hits >= maxhits => zerstöre denn Block
             DestroyBlock();
         }
-        
+
     }
 
     private void ShowEffect()
@@ -30,6 +31,7 @@ public class BlockController : MonoBehaviour
 
     void Start()
     {
+        level.CountBreakableBlocks();
         level = FindObjectOfType<LevelController>();
     }
 
@@ -40,6 +42,20 @@ public class BlockController : MonoBehaviour
         level.DestroyBlock();
         var gameStatus = FindObjectOfType<GameStatusController>();
         gameStatus.ScoreCalculator();
+        if (hits >= maxHits)
+        {
+            DestroyBlock();
+        }
+        else
+        {
+            ShowNextHitSprite();
+        }
+
+    }
+
+    private void ShowNextHitSprite()
+    {
+        GetComponent<SpriteRenderer>().sprite = hitSprites[hits - 1];
     }
     
    
